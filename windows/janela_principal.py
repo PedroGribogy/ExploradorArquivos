@@ -1,37 +1,36 @@
 # Configuaracao da janela principal
 
-import tkinter as tk # Permite criar um interface grafica
-import os # Permite acesso ao sistema operacional
-from listar_discos import listar_discos # Importa a funcao para listar os discos
-import selecionar_disco # Importa o módulo selecionar_disco
-from voltar_diretorio import voltar_diretorio # Importa a funcao para voltar ao diretorio anterior
-from selecionar_item import selecionar_item # Importa a funcao para selecionar item do diretorio
-from listar_conteudo import listar_conteudo # Importa a funcao para listar o conteudo
-import globals # Importa o módulo globals
-from historico import exibir_historico # Importa a funcao para exibir o historico
-import tkinter.messagebox as messagebox # Importa o módulo messagebox
+import tkinter as tk
+import os
+from navigation.listar_discos import listar_discos
+from navigation.selecionar_disco import selecionar_disco
+from navigation.voltar_diretorio import voltar_diretorio
+from navigation.selecionar_item import selecionar_item
+from navigation.listar_conteudo import listar_conteudo
+import globals
+from windows.historico import exibir_historico
+import tkinter.messagebox as messagebox
 
 # Configuração de cores
-COR_FUNDO = "#000000"  # Preto
-COR_BOTAO = "#0000FF"  # Azul
-COR_TEXTO = "#FFFFFF"  # Branco
-COR_LISTA = "#333333"  # Cinza escuro
+COR_FUNDO = "#000000"
+COR_BOTAO = "#0000FF"
+COR_TEXTO = "#FFFFFF"
+COR_LISTA = "#333333"
 
-# Cria a janela principal antes de qualquer outra operação
+# Cria a janela principal
 janela = tk.Tk()
 janela.title("Gerenciador de Arquivos")
 janela.geometry("700x650")
 janela.configure(bg=COR_FUNDO)
-janela.protocol("WM_DELETE_WINDOW", lambda: mostrar_mensagem_e_sair())  # Trata o fechamento da janela
+janela.protocol("WM_DELETE_WINDOW", lambda: mostrar_mensagem_e_sair())
 
 # Inicializa as variáveis globais
 globals.inicializar_variaveis(janela)
 
-# Frame para os botões de filtro (definido globalmente para poder mostrar/esconder)
+# Frame para os botões de filtro
 frame_filtros = None
 
 def filtrar_conteudo(caminho, tipo):
-    """Filtra o conteúdo do diretório baseado no tipo selecionado"""
     lista_conteudo.delete(0, tk.END)
     conteudo = listar_conteudo(caminho)
     
@@ -58,17 +57,14 @@ def filtrar_conteudo(caminho, tipo):
                 lista_conteudo.insert(tk.END, item)
 
 def atualizar_lista(caminho):
-    """Atualiza a lista com o filtro atual"""
     filtrar_conteudo(caminho, globals.filtro_atual.get())
 
 def mostrar_filtros():
-    """Mostra os botões de filtro"""
     global frame_filtros
     if frame_filtros is None:
         frame_filtros = tk.Frame(janela, bg=COR_FUNDO)
-        frame_filtros.pack_forget()  # Não mostra ainda
+        frame_filtros.pack_forget()
 
-        # Botões de filtro com cores invertidas quando selecionados
         for valor in ["Todos", "Pastas", "Arquivos", "Imagens", "Vídeos"]:
             rb = tk.Radiobutton(frame_filtros, 
                               text=valor, 
@@ -82,63 +78,49 @@ def mostrar_filtros():
                               activeforeground=COR_TEXTO)
             rb.pack(side=tk.LEFT, padx=5)
         
-        # Reposiciona o frame de filtros antes do botão Sair
         frame_filtros.pack(before=botao_sair, pady=5)
 
 def selecionar_disco_e_mostrar_filtros():
-    """Função que combina a seleção do disco e exibição dos filtros"""
-    from selecionar_disco import selecionar_disco  # Importa a função diretamente
-    selecionar_disco()  # Chama a função do módulo
+    selecionar_disco()
     mostrar_filtros()
 
-# Obter o nome do usuario do Windows
-usuario_windows = os.getenv("USERNAME") # Chama a funcao que verifica qual o usuario do Windows esta conectado
-tk.Label(janela, text=f"Usuario logado: {usuario_windows}", font=("Arial", 10, "bold"), bg=COR_FUNDO, fg=COR_TEXTO).pack(pady=5) # Mostra na janela qual usuario esta logado
+# Interface do usuário
+usuario_windows = os.getenv("USERNAME")
+tk.Label(janela, text=f"Usuario logado: {usuario_windows}", font=("Arial", 10, "bold"), bg=COR_FUNDO, fg=COR_TEXTO).pack(pady=5)
 
-# Frame para o seletor de discos
 frame_discos = tk.Frame(janela, bg=COR_FUNDO)
 frame_discos.pack(pady=10)
 
-# Dropdown para selecionar os discos
-discos_var = tk.StringVar() # Cria a opca de selecionar os discos
-discos_var.set("Selecione um disco") # Abre um selecao, para o usuario escolher qual disco deseja
-discos = listar_discos() # Verifica quais os discos existentes
+discos_var = tk.StringVar()
+discos_var.set("Selecione um disco")
+discos = listar_discos()
 
-# Estiliza o menu dropdown
 menu_discos = tk.OptionMenu(frame_discos, discos_var, *discos)
 menu_discos.config(bg=COR_BOTAO, fg="white", activebackground=COR_BOTAO, activeforeground="white")
 menu_discos["menu"].config(bg=COR_BOTAO, fg="white")
 menu_discos.pack(pady=5)
 
-# Adiciona um espaçador
 tk.Frame(janela, height=20, bg=COR_FUNDO).pack()
 
-# Frame para os botões principais
 frame_botoes = tk.Frame(janela, bg=COR_FUNDO)
 frame_botoes.pack(pady=7)
 
-# Botões principais lado a lado
 tk.Button(frame_botoes, text="Abrir Disco", command=selecionar_disco_e_mostrar_filtros, bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
 tk.Button(frame_botoes, text="Histórico", command=exibir_historico, bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
 tk.Button(frame_botoes, text="Voltar", command=lambda: [voltar_diretorio(), atualizar_lista(caminho_atual.get())], bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
 
-# Caminho atual
-caminho_atual = tk.StringVar() # Cria a opcao de ver os caminhos
-tk.Label(janela, textvariable=caminho_atual, bg=COR_FUNDO, fg=COR_TEXTO).pack(pady=5) # Cria uma janela com os caminhos 
+caminho_atual = tk.StringVar()
+tk.Label(janela, textvariable=caminho_atual, bg=COR_FUNDO, fg=COR_TEXTO).pack(pady=5)
 
-# Lista dos conteudos do diretorio
-lista_conteudo = tk.Listbox(janela, width=80, height=20, bg=COR_LISTA, fg=COR_TEXTO) # Janela que lista o conteudo do diretorio
-lista_conteudo.pack(pady=10) # Posiciona o widget
-lista_conteudo.bind("<<ListboxSelect>>", selecionar_item) # Chama a funcao quando o usuario selecionar algum item
+lista_conteudo = tk.Listbox(janela, width=80, height=20, bg=COR_LISTA, fg=COR_TEXTO)
+lista_conteudo.pack(pady=10)
+lista_conteudo.bind("<<ListboxSelect>>", selecionar_item)
 
 def mostrar_mensagem_e_sair():
-    """Mostra uma mensagem de agradecimento e fecha a aplicação"""
     messagebox.showinfo("Agradecimento", "Obrigado por nos executar!")
-    janela.quit()  # Usa quit para encerrar o loop principal
+    janela.destroy()
 
-# Botao para sair (definido como variável global para referência)
 botao_sair = tk.Button(janela, text="Sair", command=mostrar_mensagem_e_sair, bg="#FF5252", fg="white")
-botao_sair.pack(pady=10) # Cria um botao para sair da execucao
+botao_sair.pack(pady=10)
 
-# Iniciar a interface
-janela.mainloop() # Mantem a janela aberta para as interacoes do usuario
+janela.mainloop() 
