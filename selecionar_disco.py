@@ -3,7 +3,7 @@
 # Funcao selecionar_disco
 
 def selecionar_disco(): # Cria a funcao selecionar_disco
-    from janela_principal import discos_var, caminho_atual, atualizar_lista
+    from janela_principal import discos_var, caminho_atual, atualizar_lista, janela
     from banco import registrar_operacao # Importa a função para registrar operações
     import globals
     

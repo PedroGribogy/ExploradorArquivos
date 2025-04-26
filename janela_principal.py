@@ -9,10 +9,11 @@ from selecionar_item import selecionar_item # Importa a funcao para selecionar i
 from listar_conteudo import listar_conteudo # Importa a funcao para listar o conteudo
 import globals # Importa o módulo globals
 from historico import exibir_historico # Importa a funcao para exibir o historico
+import tkinter.messagebox as messagebox # Importa o módulo messagebox
 
 # Configuração de cores
 COR_FUNDO = "#000000"  # Preto
-COR_BOTAO = "#4CAF50"  # Verde
+COR_BOTAO = "#0000FF"  # Azul
 COR_TEXTO = "#FFFFFF"  # Branco
 COR_LISTA = "#333333"  # Cinza escuro
 
@@ -21,6 +22,7 @@ janela = tk.Tk()
 janela.title("Gerenciador de Arquivos")
 janela.geometry("700x650")
 janela.configure(bg=COR_FUNDO)
+janela.protocol("WM_DELETE_WINDOW", lambda: mostrar_mensagem_e_sair())  # Trata o fechamento da janela
 
 # Inicializa as variáveis globais
 globals.inicializar_variaveis(janela)
@@ -85,7 +87,8 @@ def mostrar_filtros():
 
 def selecionar_disco_e_mostrar_filtros():
     """Função que combina a seleção do disco e exibição dos filtros"""
-    selecionar_disco.selecionar_disco()  # Chama a função do módulo
+    from selecionar_disco import selecionar_disco  # Importa a função diretamente
+    selecionar_disco()  # Chama a função do módulo
     mostrar_filtros()
 
 # Obter o nome do usuario do Windows
@@ -128,8 +131,13 @@ lista_conteudo = tk.Listbox(janela, width=80, height=20, bg=COR_LISTA, fg=COR_TE
 lista_conteudo.pack(pady=10) # Posiciona o widget
 lista_conteudo.bind("<<ListboxSelect>>", selecionar_item) # Chama a funcao quando o usuario selecionar algum item
 
+def mostrar_mensagem_e_sair():
+    """Mostra uma mensagem de agradecimento e fecha a aplicação"""
+    messagebox.showinfo("Agradecimento", "Obrigado por nos executar!")
+    janela.quit()  # Usa quit para encerrar o loop principal
+
 # Botao para sair (definido como variável global para referência)
-botao_sair = tk.Button(janela, text="Sair", command=janela.quit, bg="#FF5252", fg="white")
+botao_sair = tk.Button(janela, text="Sair", command=mostrar_mensagem_e_sair, bg="#FF5252", fg="white")
 botao_sair.pack(pady=10) # Cria um botao para sair da execucao
 
 # Iniciar a interface
