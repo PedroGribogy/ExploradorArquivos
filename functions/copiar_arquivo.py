@@ -4,7 +4,6 @@ import os
 import shutil
 from tkinter import messagebox
 import tkinter as tk
-from tkinter import filedialog
 from database.banco import registrar_operacao
 
 # Configuração de cores
@@ -16,9 +15,9 @@ COR_LISTA = "#333333"  # Cinza escuro
 def copiar_arquivo(caminho_arquivo):
     from windows.janela_principal import janela
     
-    def selecionar_destino():
-        destino = filedialog.askdirectory()
-        if destino:
+    def confirmar_copiar():
+        destino = entrada_destino.get()
+        if destino and os.path.isdir(destino):
             try:
                 nome_arquivo = os.path.basename(caminho_arquivo)
                 novo_caminho = os.path.join(destino, nome_arquivo)
@@ -28,10 +27,12 @@ def copiar_arquivo(caminho_arquivo):
                 janela_copiar.destroy()
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao copiar o arquivo: {e}")
+        else:
+            messagebox.showerror("Erro", "Caminho de destino inválido.")
                 
     janela_copiar = tk.Toplevel(janela)
     janela_copiar.title("Copiar Arquivo")
-    janela_copiar.geometry("400x150")
+    janela_copiar.geometry("400x200")
     janela_copiar.configure(bg=COR_FUNDO)
 
     tk.Label(janela_copiar, 
@@ -39,9 +40,17 @@ def copiar_arquivo(caminho_arquivo):
              bg=COR_FUNDO,
              fg=COR_TEXTO).pack(pady=10)
              
+    tk.Label(janela_copiar,
+             text="Digite o caminho de destino:",
+             bg=COR_FUNDO,
+             fg=COR_TEXTO).pack(pady=5)
+             
+    entrada_destino = tk.Entry(janela_copiar, width=50, bg=COR_LISTA, fg=COR_TEXTO, insertbackground=COR_TEXTO)
+    entrada_destino.pack(pady=5)
+
     tk.Button(janela_copiar,
-              text="Escolher Destino",
-              command=selecionar_destino,
+              text="Copiar",
+              command=confirmar_copiar,
               bg=COR_BOTAO,
               fg=COR_TEXTO,
               activebackground=COR_BOTAO,

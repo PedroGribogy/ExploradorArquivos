@@ -20,7 +20,7 @@ def menu_arquivo(caminho_arquivo):
     
     janela_menu = tk.Toplevel(janela)
     janela_menu.title("Menu do Arquivo")
-    janela_menu.geometry("300x230")
+    janela_menu.geometry("300x280")
     janela_menu.configure(bg=COR_FUNDO)
   
     # Label com o nome do arquivo
