@@ -128,7 +128,7 @@ frame_botoes = tk.Frame(janela, bg=COR_FUNDO)
 frame_botoes.pack(pady=7)
 
 tk.Button(frame_botoes, text="Abrir Disco", command=selecionar_disco_e_mostrar_filtros, bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
-tk.Button(frame_botoes, text="Histórico", command=exibir_historico, bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
+tk.Button(frame_botoes, text="Log", command=exibir_historico, bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
 tk.Button(frame_botoes, text="Voltar", command=lambda: [voltar_diretorio(), atualizar_lista(caminho_atual.get())], bg=COR_BOTAO, fg="white").pack(side=tk.LEFT, padx=7)
 
 caminho_atual = tk.StringVar()
