@@ -49,7 +49,7 @@ def registrar_operacao(caminho, operacao):
         cursor.execute("""
             INSERT INTO historico (data_hora, operacao, caminho)
             VALUES (?, ?, ?)
-        """, (datetime.now()strftime('%Y-%m-%d %H:%M:%S'), operacao, caminho))
+        """, (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), operacao, caminho))
         conn.commit()
         conn.close()
         print("Operação registrada com sucesso!")
